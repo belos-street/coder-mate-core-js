@@ -1,3 +1,6 @@
-import { generateTokens } from '@lib/language/javascript/main'
+import { generateJavaScriptTokens } from 'lib'
 
-console.log(generateTokens)
+generateJavaScriptTokens(`const a = 10
+    let b = 20
+    console.log(a + b)
+`)

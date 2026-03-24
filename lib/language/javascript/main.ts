@@ -1,7 +1,7 @@
 import { grammarRules, type GrammarRule } from './rule'
 
-export const generateTokens = (code: string) => {
-  const tokens = [[]] // 二维数组，初始第一行
+export const generateJavaScriptTokens = (code: string) => {
+  const tokens: any[][] = [[]] // 二维数组，初始第一行
   let currentState: GrammarRule['state'] = 'initial' // 有限状态机初始状态
   let currentLine = 1 // 当前行号（从1开始）
   let currentCol = 0 // 当前列号（从0开始，对应字符起始位置）
@@ -11,13 +11,38 @@ export const generateTokens = (code: string) => {
 
   let position = 0 // 当前字符位置（从0开始）
   while (position < codeLength) {
-    let matched = false
+    let matched = false // 是否匹配到规则
 
     for (const rule of rules) {
       rule.regex.lastIndex = position
       const match = rule.regex.exec(code)
 
+      if (!match) continue
+
+      const matchedText = match[0]
+      const tokenLength = matchedText.length
+
+      // 计算当前token的起始列和结束列（结束列=起始列+长度，不包含结束位置
+      const colStart = currentCol
+
+      tokens[0]!.push({
+        type: rule.token,
+        value: matchedText,
+        col: [colStart, colStart + tokenLength],
+        line: currentLine
+      })
+
+      currentState = rule.state
+      position += tokenLength // 只更新索引，不创建新字符串
+      matched = true
+
       debugger
+      break // 匹配到一个规则后，继续下一轮解析
+    }
+
+    if (!matched) {
+      currentCol++
+      position++
     }
   }
 }
