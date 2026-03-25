@@ -14,8 +14,10 @@ export const generateJavaScriptTokens = (code: string) => {
     let matched = false // 是否匹配到规则
 
     for (const rule of rules) {
-      rule.regex.lastIndex = position
-      const match = rule.regex.exec(code)
+      const { regex, token, state } = rule
+
+      regex.lastIndex = position // 重置正则表达式索引
+      const match = regex.exec(code)
 
       if (!match) continue
 
@@ -25,18 +27,24 @@ export const generateJavaScriptTokens = (code: string) => {
       // 计算当前token的起始列和结束列（结束列=起始列+长度，不包含结束位置
       const colStart = currentCol
 
-      tokens[0]!.push({
-        type: rule.token,
-        value: matchedText,
-        col: [colStart, colStart + tokenLength],
-        line: currentLine
-      })
+      if (token === 'token-newline') {
+        currentLine++
+        currentCol = 0
+        tokens.push([])
+      } else {
+        tokens[currentLine - 1]!.push({
+          type: token,
+          value: matchedText,
+          col: [colStart, colStart + tokenLength],
+          line: currentLine
+        })
+        currentCol += tokenLength
+      }
 
-      currentState = rule.state
+      currentState = state
       position += tokenLength // 只更新索引，不创建新字符串
       matched = true
 
-      debugger
       break // 匹配到一个规则后，继续下一轮解析
     }
 
@@ -45,4 +53,6 @@ export const generateJavaScriptTokens = (code: string) => {
       position++
     }
   }
+
+  return tokens
 }
