@@ -1,8 +1,9 @@
-import { grammarRules, type GrammarRule } from './rule'
+import { grammarRules } from './rule'
+import type { Token, GrammarState, TokenStream } from './type'
 
-export const generateJavaScriptTokens = (code: string) => {
-  const tokens: any[][] = [[]] // 二维数组，初始第一行
-  let currentState: GrammarRule['state'] = 'initial' // 有限状态机初始状态
+export const generateJavaScriptTokens = (code: string): TokenStream => {
+  const tokens: TokenStream = [[]]
+  let currentState: GrammarState = 'initial'
   let currentLine = 1 // 当前行号（从1开始）
   let currentCol = 0 // 当前列号（从0开始，对应字符起始位置）
 
@@ -31,13 +32,14 @@ export const generateJavaScriptTokens = (code: string) => {
         currentLine++
         currentCol = 0
         tokens.push([])
-      } else {
-        tokens[currentLine - 1]!.push({
+      } else if (token !== null) {
+        const newToken: Token = {
           type: token,
           value: matchedText,
           col: [colStart, colStart + tokenLength],
           line: currentLine
-        })
+        }
+        tokens[currentLine - 1]!.push(newToken)
         currentCol += tokenLength
       }
 
