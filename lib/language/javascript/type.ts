@@ -1,19 +1,36 @@
-// Token类型：所有可能的词法单元类型
-export type TokenType =
-  | 'token-comment' // 注释
-  | 'token-string' // 字符串
-  | 'token-template-string' // 模板字符串
-  | 'token-template-expression' // 模板表达式
-  | 'token-keyword' // 关键字
-  | 'token-literal' // 字面量
-  | 'token-number' // 数字
-  | 'token-identifier' // 标识符
-  | 'token-operator' // 运算符
-  | 'token-punctuation' // 标点符号
-  | 'token-whitespace' // 空白字符
-  | 'token-newline' // 换行符
-  | 'token-regex' // 正则表达式
-  | 'token-unknown' // 未知类型
+// Token类型常量
+export const TokenType = {
+  Comment: 'token-comment',
+  String: 'token-string',
+  TemplateString: 'token-template-string',
+  TemplateExpression: 'token-template-expression',
+  Keyword: 'token-keyword',
+  Literal: 'token-literal',
+  Number: 'token-number',
+  Identifier: 'token-identifier',
+  Operator: 'token-operator',
+  Punctuation: 'token-punctuation',
+  Whitespace: 'token-whitespace',
+  Newline: 'token-newline',
+  Regex: 'token-regex',
+  Unknown: 'token-unknown'
+} as const
+
+// 推导TokenType类型
+export type TokenType = (typeof TokenType)[keyof typeof TokenType]
+
+// 状态机状态常量
+export const GrammarState = {
+  Initial: 'initial',
+  Template: 'template',
+  TemplateExpression: 'template-expression',
+  CommentMultiline: 'comment-multiline',
+  CommentSingleline: 'comment-singleline',
+  Regex: 'regex'
+} as const
+
+// 推导GrammarState类型
+export type GrammarState = (typeof GrammarState)[keyof typeof GrammarState]
 
 // Token结构：单个词法单元的完整信息
 export interface Token {
@@ -22,15 +39,6 @@ export interface Token {
   col: [number, number] // 列范围 [起始, 结束)
   line: number // 行号（从1开始）
 }
-
-// 状态机状态：词法分析器的解析状态
-export type GrammarState =
-  | 'initial' // 初始状态
-  | 'template' // 模板字符串内
-  | 'template-expression' // 模板表达式内
-  | 'comment-multiline' // 多行注释内
-  | 'comment-singleline' // 单行注释内
-  | 'regex' // 正则表达式内
 
 // 词法规则：单个正则匹配规则
 export interface GrammarRule {

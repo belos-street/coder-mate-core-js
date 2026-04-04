@@ -1,9 +1,10 @@
 import { grammarRules } from './rule'
-import type { Token, GrammarState, TokenStream } from './type'
+import { GrammarState, TokenType } from './type'
+import type { Token, TokenStream } from './type'
 
 export const generateJavaScriptTokens = (code: string): TokenStream => {
   const tokens: TokenStream = [[]]
-  let currentState: GrammarState = 'initial'
+  let currentState: GrammarState = GrammarState.Initial
   let currentLine = 1 // 当前行号（从1开始）
   let currentCol = 0 // 当前列号（从0开始，对应字符起始位置）
 
@@ -28,7 +29,7 @@ export const generateJavaScriptTokens = (code: string): TokenStream => {
       // 计算当前token的起始列和结束列（结束列=起始列+长度，不包含结束位置
       const colStart = currentCol
 
-      if (token === 'token-newline') {
+      if (token === TokenType.Newline) {
         currentLine++
         currentCol = 0
         tokens.push([])
