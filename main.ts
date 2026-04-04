@@ -1,288 +1,47 @@
 import { generateJavaScriptTokens } from 'lib'
+import { renderToApp } from './src/render'
 
-const tokens = generateJavaScriptTokens(`const a = 10
-let b = 20
-console.log(a + b)
-function add(a, b) {
-  return a + b
-}`)
-console.log(tokens)
+const code = `class Person extends Object {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
 
-const result = [
-  [
-    {
-      type: 'token-keyword',
-      value: 'const',
-      col: [0, 5],
-      line: 1
-    },
-    {
-      type: 'token-whitespace',
-      value: ' ',
-      col: [5, 6],
-      line: 1
-    },
-    {
-      type: 'token-ident',
-      value: 'a',
-      col: [6, 7],
-      line: 1
-    },
-    {
-      type: 'token-whitespace',
-      value: ' ',
-      col: [7, 8],
-      line: 1
-    },
-    {
-      type: 'token-punctuation',
-      value: '=',
-      col: [8, 9],
-      line: 1
-    },
-    {
-      type: 'token-whitespace',
-      value: ' ',
-      col: [9, 10],
-      line: 1
-    },
-    {
-      type: 'token-number',
-      value: '10',
-      col: [10, 12],
-      line: 1
-    }
-  ],
-  [
-    {
-      type: 'token-keyword',
-      value: 'let',
-      col: [0, 3],
-      line: 2
-    },
-    {
-      type: 'token-whitespace',
-      value: ' ',
-      col: [3, 4],
-      line: 2
-    },
-    {
-      type: 'token-ident',
-      value: 'b',
-      col: [4, 5],
-      line: 2
-    },
-    {
-      type: 'token-whitespace',
-      value: ' ',
-      col: [5, 6],
-      line: 2
-    },
-    {
-      type: 'token-punctuation',
-      value: '=',
-      col: [6, 7],
-      line: 2
-    },
-    {
-      type: 'token-whitespace',
-      value: ' ',
-      col: [7, 8],
-      line: 2
-    },
-    {
-      type: 'token-number',
-      value: '20',
-      col: [8, 10],
-      line: 2
-    }
-  ],
-  [
-    {
-      type: 'token-ident',
-      value: 'console',
-      col: [0, 7],
-      line: 3
-    },
-    {
-      type: 'token-punctuation',
-      value: '.',
-      col: [7, 8],
-      line: 3
-    },
-    {
-      type: 'token-ident',
-      value: 'log',
-      col: [8, 11],
-      line: 3
-    },
-    {
-      type: 'token-punctuation',
-      value: '(',
-      col: [11, 12],
-      line: 3
-    },
-    {
-      type: 'token-ident',
-      value: 'a',
-      col: [12, 13],
-      line: 3
-    },
-    {
-      type: 'token-whitespace',
-      value: ' ',
-      col: [13, 14],
-      line: 3
-    },
-    {
-      type: 'token-punctuation',
-      value: '+',
-      col: [14, 15],
-      line: 3
-    },
-    {
-      type: 'token-whitespace',
-      value: ' ',
-      col: [15, 16],
-      line: 3
-    },
-    {
-      type: 'token-ident',
-      value: 'b',
-      col: [16, 17],
-      line: 3
-    },
-    {
-      type: 'token-punctuation',
-      value: ')',
-      col: [17, 18],
-      line: 3
-    }
-  ],
-  [
-    {
-      type: 'token-keyword',
-      value: 'function',
-      col: [0, 8],
-      line: 4
-    },
-    {
-      type: 'token-whitespace',
-      value: ' ',
-      col: [8, 9],
-      line: 4
-    },
-    {
-      type: 'token-ident',
-      value: 'add',
-      col: [9, 12],
-      line: 4
-    },
-    {
-      type: 'token-punctuation',
-      value: '(',
-      col: [12, 13],
-      line: 4
-    },
-    {
-      type: 'token-ident',
-      value: 'a',
-      col: [13, 14],
-      line: 4
-    },
-    {
-      type: 'token-punctuation',
-      value: ',',
-      col: [14, 15],
-      line: 4
-    },
-    {
-      type: 'token-whitespace',
-      value: ' ',
-      col: [15, 16],
-      line: 4
-    },
-    {
-      type: 'token-ident',
-      value: 'b',
-      col: [16, 17],
-      line: 4
-    },
-    {
-      type: 'token-punctuation',
-      value: ')',
-      col: [17, 18],
-      line: 4
-    },
-    {
-      type: 'token-whitespace',
-      value: ' ',
-      col: [18, 19],
-      line: 4
-    },
-    {
-      type: 'token-punctuation',
-      value: '{',
-      col: [19, 20],
-      line: 4
-    }
-  ],
-  [
-    {
-      type: 'token-whitespace',
-      value: '  ',
-      col: [0, 2],
-      line: 5
-    },
-    {
-      type: 'token-keyword',
-      value: 'return',
-      col: [2, 8],
-      line: 5
-    },
-    {
-      type: 'token-whitespace',
-      value: ' ',
-      col: [8, 9],
-      line: 5
-    },
-    {
-      type: 'token-ident',
-      value: 'a',
-      col: [9, 10],
-      line: 5
-    },
-    {
-      type: 'token-whitespace',
-      value: ' ',
-      col: [10, 11],
-      line: 5
-    },
-    {
-      type: 'token-punctuation',
-      value: '+',
-      col: [11, 12],
-      line: 5
-    },
-    {
-      type: 'token-whitespace',
-      value: ' ',
-      col: [12, 13],
-      line: 5
-    },
-    {
-      type: 'token-ident',
-      value: 'b',
-      col: [13, 14],
-      line: 5
-    }
-  ],
-  [
-    {
-      type: 'token-punctuation',
-      value: '}',
-      col: [0, 1],
-      line: 6
-    }
-  ]
-]
+  static create(name, age) {
+    return new Person(name, age);
+  }
+
+  get info() {
+    return \`\${this.name} is \${this.age} years old\`;
+  }
+
+  async greet() {
+    await fetch('/api');
+    return 'Hello';
+  }
+}`
+
+const tokens = generateJavaScriptTokens(code)
+renderToApp(tokens)
+
+const style = document.createElement('style')
+style.textContent = `
+  body { font-family: monospace; padding: 20px; }
+  .code-block {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+  .token-keyword { color: #569cd6; }
+  .token-literal { color: #569cd6; }
+  .token-string { color: #ce9178; }
+  .token-number { color: #b5cea8; }
+  .token-identifier { color: #9cdcfe; }
+  .token-operator { color: #d4d4d4; }
+  .token-punctuation { color: #d4d4d4; }
+  .token-comment { color: #6a9955; }
+  .token-whitespace { color: transparent; }
+`
+document.head.appendChild(style)
