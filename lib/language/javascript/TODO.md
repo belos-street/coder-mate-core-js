@@ -126,66 +126,43 @@ Token类型：
 
 ### 阶段二：状态机增强
 
-#### 4. 模板字符串支持 ⭐ 核心
+#### 4. 模板字符串支持 ✅ 已完成
 **文件**: rule.ts, main.ts
 
-ES2020语法：
-```javascript
-`Hello ${name}!`
-`count: ${count + 1}`
-`template with ${obj?.prop}`
-`multi-line
-template`
-```
-
-需要新增状态：
-```typescript
-states: {
-  'initial': [...基础规则...],
-  'template': [模板字符串内容...],
-  'template_expr': [${}内表达式...],
-}
-```
-
-Token类型：
-- `token-template-string` - 模板字符串
-- `token-template-expression` - `${}` 内的表达式
+已实现功能：
+- ✅ 简单模板字符串 `` `hello` ``
+- ✅ 带表达式的模板字符串 `` `Hello ${name}!` ``
+- ✅ 模板表达式内的运算符、标识符、函数调用
+- ✅ 可选链在模板表达式中 `` `value: ${obj?.prop}` ``
+- ✅ 多行模板字符串
 
 关键实现点：
-- 识别开始符号 `` ` ``
-- 识别结束符号 `` ` ``
-- 识别 `${` 进入表达式状态
-- 识别 `}` 退出表达式状态
-- 处理嵌套的 `}` 情况
+- ✅ 识别开始符号 `` ` `` (切换到 Template 状态)
+- ✅ 识别 `${` 进入表达式状态 (TemplateExpression)
+- ✅ 识别 `}` 退出表达式状态
+- ✅ 模板表达式内复用关键字、标识符、数字等规则
+- ⚠️ 嵌套模板字符串（边缘情况，优先级低）
 
-#### 5. 多行注释支持
-**文件**: rule.ts, main.ts
+#### 5. 多行注释支持 ✅ 已完成
+**文件**: rule.ts, test/rule-comment.test.ts
 
-ES2020语法：
-```javascript
-/*
- * 多行注释
- * 支持跨行
- */
+已实现功能：
+- ✅ 单行注释 `// comment`
+- ✅ 多行注释 `/* comment */`
+- ✅ 跨行注释（包含换行符）
+- ✅ JSDoc 注释
+- ✅ 注释后的代码正常解析
 
-/**
- * JSDoc注释
- */
-```
-
-需要新增状态：
+实现方式：
 ```typescript
-'comment_multiline': [/* ... */的内容...]
+// 一次匹配整个多行注释，不需要单独状态
+{ regex: /\/\*[\s\S]*?\*\//y, token: TokenType.Comment, state: GrammarState.Initial }
 ```
-
-Token类型：
-- `token-comment` - 注释（区分单行和多行）
 
 关键实现点：
-- 识别开始符号 `/*`
-- 识别结束符号 `*/`
-- 处理跨行
-- 可选：处理嵌套注释（但JS不支持嵌套）
+- ✅ 识别开始符号 `/*`
+- ✅ 识别结束符号 `*/`
+- ✅ 处理跨行（使用 `[\s\S]` 匹配任意字符）
 
 ---
 

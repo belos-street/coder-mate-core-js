@@ -1,6 +1,6 @@
 import { grammarRules } from './rule'
 import { GrammarState, TokenType } from './type'
-import type { Token, TokenStream } from './type'
+import type { GrammarRule, Token, TokenStream } from './type'
 
 export const generateJavaScriptTokens = (code: string): TokenStream => {
   const tokens: TokenStream = [[]]
@@ -9,10 +9,10 @@ export const generateJavaScriptTokens = (code: string): TokenStream => {
   let currentCol = 0 // 当前列号（从0开始，对应字符起始位置）
 
   const codeLength = code.length
-  const rules = grammarRules[currentState]
 
   let position = 0 // 当前字符位置（从0开始）
   while (position < codeLength) {
+    const rules: GrammarRule[] = grammarRules[currentState]
     let matched = false // 是否匹配到规则
 
     for (const rule of rules) {
