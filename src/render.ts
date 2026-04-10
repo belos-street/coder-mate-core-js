@@ -1,59 +1,66 @@
-import type { TokenStream } from 'lib/language/javascript/type'
+import type { TokenStream } from 'lib/core/types'
+import { parse as parseJavaScript } from 'lib/language/javascript'
+import type { HighlightTheme } from 'lib/themes'
+import { resolveScopeStyle, resolveTheme } from 'lib/themes'
 
-const style = document.createElement('style')
-style.textContent = `
-  body { font-family: monospace; padding: 20px; }
-  .code-block {
-    background: #1e1e1e;
-    color: #d4d4d4;
-    padding: 20px;
-    border-radius: 8px;
-    overflow-x: auto;
-  }
-  .token-keyword { color: #569cd6; }
-  .token-literal { color: #569cd6; }
-  .token-string { color: #ce9178; }
-  .token-number { color: #b5cea8; }
-  .token-identifier { color: #9cdcfe; }
-  .token-operator { color: #d4d4d4; }
-  .token-punctuation { color: #d4d4d4; }
-  .token-comment { color: #6a9955; }
-  .token-whitespace { color: transparent; }
-`
-document.head.appendChild(style)
+const DEFAULT_PRE_STYLE =
+  "background: #1E1E1E; padding: 16px; border-radius: 8px; font-family: 'Consolas', 'Monaco', monospace; font-size: 14px; line-height: 1.5; white-space: pre;"
 
-export function renderTokensToHtml(tokenStream: TokenStream): string {
-  let html = '<pre class="code-block"><code>'
-
-  for (const lineTokens of tokenStream) {
-    for (const token of lineTokens) {
-      const escapedValue = escapeHtml(token.value)
-      html += `<span class="${token.type}">${escapedValue}</span>`
-    }
-    html += '\n'
-  }
-
-  html += '</code></pre>'
-  return html
+export interface RenderHtmlOptions {
+  theme?: string | HighlightTheme
+  preStyle?: string
+  lineClassPrefix?: string
 }
 
-export function renderToApp(tokenStream: TokenStream): void {
-  const html = renderTokensToHtml(tokenStream)
-
-  const app = globalThis.document.getElementById('app') as HTMLElement
-  if (!app) {
-    console.error('Element with id "app" not found')
-    return
-  }
-
-  app.innerHTML = html
-}
-
-export function escapeHtml(text: string): string {
+/**
+ * HTML 特殊字符转义
+ */
+export const escapeHtml = (text: string): string => {
   return text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
+    .replace(/'/g, '&#39;')
+    .replace(/`/g, '&#96;')
+    .replace(/\$/g, '&#36;')
+    .replace(/\t/g, '&#9;')
+}
+
+/**
+ * 渲染 token 流为 HTML
+ */
+export const renderHtml = <Scope extends string>(
+  rows: TokenStream<Scope>,
+  options?: RenderHtmlOptions
+): string => {
+  const theme = resolveTheme(options?.theme)
+  const preStyle = options?.preStyle ?? theme.preStyle ?? DEFAULT_PRE_STYLE
+  const lineClassPrefix = options?.lineClassPrefix ?? 'line-'
+
+  const rowsHtml = rows
+    .map((rowTokens, rowIndex) => {
+      const lineTokensHtml = rowTokens
+        .map((token) => {
+          const style = resolveScopeStyle(token.scope, theme)
+          return `<span style="${style}">${escapeHtml(token.text)}</span>`
+        })
+        .join('')
+
+      return `<div class="code-line ${lineClassPrefix}${rowIndex + 1}">${lineTokensHtml}</div>`
+    })
+    .join('')
+
+  return `<pre style="${preStyle}"><code>${rowsHtml}</code></pre>`
+}
+
+/**
+ * JavaScript 代码高亮（调试/展示层）
+ */
+export const highlightJavaScript = (
+  code: string,
+  options?: RenderHtmlOptions
+): string => {
+  const rows = parseJavaScript(code)
+  return renderHtml(rows, options)
 }

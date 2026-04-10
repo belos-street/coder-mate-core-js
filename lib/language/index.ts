@@ -1,1 +1,11 @@
-
+export {
+  getLanguage,
+  listLanguages,
+  registerBuiltinLanguages,
+  registerLanguage,
+  resetLanguageRegistryForTest,
+  tokenize
+} from './manager'
+export { BUILTIN_LANGUAGES } from './builtins'
+export { javascriptLanguage, parse as parseJavaScript } from './javascript'
+export { jsonLanguage, parse as parseJSON } from './json'

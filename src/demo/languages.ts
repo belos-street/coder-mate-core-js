@@ -1,6 +1,13 @@
-import { highlight } from './lib/language/javascript/main'
+import type { LanguageId } from './types'
 
-const code = `/*
+export const LANGUAGE_LABELS: Record<LanguageId, string> = {
+  javascript: 'JavaScript',
+  json: 'JSON',
+  python: 'Python'
+}
+
+export const LANGUAGE_SNIPPETS: Record<LanguageId, string> = {
+  javascript: `/*
  * ES2020 完整语法测试
  * 演示所有核心语法特性
  */
@@ -77,14 +84,17 @@ const obj = {
 
 // 11. 运算符
 const a = 10, b = 20;
-const result2 = (a + b) * (a - b) === 0 && a || b;
-`
-
-const html = highlight(code)
-
-const app = document.getElementById('app') as HTMLElement
-if (app) {
-  app.innerHTML = html
-} else {
-  console.error('Element with id "app" not found')
+const result2 = (a + b) * (a - b) === 0 && a || b;`,
+  json: `{
+  "project": "coder-mate-core-js",
+  "version": 1,
+  "stable": true,
+  "threshold": -12.5e+2,
+  "items": [1, 2, 3],
+  "meta": null
+}`,
+  python: `# Python tokenizer is coming soon
+class Greeter:
+    def hello(self, name: str) -> str:
+        return f"Hello, {name}"`
 }

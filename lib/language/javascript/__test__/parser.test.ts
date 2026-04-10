@@ -5,10 +5,10 @@ import {
   popState,
   getCurrentState,
   splitTokenByLineBreak,
-  matchToken,
-  parse,
-  highlight
-} from '../main'
+  matchToken
+} from '../engine'
+import { parse } from '../index'
+import { highlightJavaScript as highlight } from '../../../../src/render'
 
 describe('解析引擎测试', () => {
   describe('状态栈管理', () => {

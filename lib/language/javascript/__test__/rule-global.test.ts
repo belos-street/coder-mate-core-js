@@ -1,6 +1,6 @@
 import { test, expect, describe } from 'bun:test'
 import { GRAMMAR_RULES } from '../rule'
-import { matchToken, createInitialContext } from '../main'
+import { matchToken, createInitialContext } from '../engine'
 
 describe('global 状态规则测试', () => {
   describe('注释规则', () => {

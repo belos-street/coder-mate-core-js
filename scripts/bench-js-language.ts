@@ -1,4 +1,5 @@
-import { parse, highlight } from '../main'
+import { parse } from 'lib/language/javascript'
+import { highlightJavaScript as highlight } from '@/render'
 import { heapStats } from 'bun:jsc'
 
 /**

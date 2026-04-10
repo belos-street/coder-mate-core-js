@@ -1,5 +1,5 @@
 import { test, expect, describe } from 'bun:test'
-import { matchToken, createInitialContext, pushState } from '../main'
+import { matchToken, createInitialContext, pushState } from '../engine'
 
 describe('字符串状态规则测试', () => {
   describe('string-double 状态', () => {

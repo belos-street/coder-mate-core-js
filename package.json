@@ -1,10 +1,11 @@
 {
   "name": "coder-mate-core-js",
-  "module": "main.ts",
+  "module": "src/main.ts",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "bun build",
+    "bench:js-language": "bun scripts/bench-js-language.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"
