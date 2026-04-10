@@ -1,4 +1,4 @@
-import type { LanguageAdapter } from 'lib/core/registry'
+import type { LanguageAdapter } from '../../core/registry'
 import { parse } from './engine'
 import { JSON_LANGUAGE_META } from './spec'
 

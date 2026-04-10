@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dist Import Test</title>
+    <style>
+      body {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        margin: 24px;
+        line-height: 1.5;
+      }
+      .ok {
+        color: #0a7a28;
+      }
+      .fail {
+        color: #b42318;
+      }
+      pre {
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: #f8f8f8;
+        white-space: pre-wrap;
+      }
+      .grid {
+        display: grid;
+        gap: 16px;
+      }
+      .panel h2 {
+        margin: 0 0 8px;
+      }
+      #render-preview {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Dist Import Smoke Test</h1>
+    <div class="grid">
+      <section class="panel">
+        <h2>1) dist/language + dist/themes</h2>
+        <p id="status">Running...</p>
+        <pre id="output"></pre>
+      </section>
+
+      <section class="panel">
+        <h2>2) dist-src/render (可视化预览)</h2>
+        <p id="render-status">Running...</p>
+        <div id="render-preview"></div>
+      </section>
+    </div>
+
+    <script type="module">
+      import { tokenize, listLanguages } from './dist/language.js'
+      import { getTheme, listThemes } from './dist/themes.js'
+      import { highlightJavaScript } from './dist-src/render.js'
+
+      const status = document.getElementById('status')
+      const output = document.getElementById('output')
+      const renderStatus = document.getElementById('render-status')
+      const renderPreview = document.getElementById('render-preview')
+
+      const setResult = (ok, details) => {
+        status.textContent = ok ? 'PASS' : 'FAIL'
+        status.className = ok ? 'ok' : 'fail'
+        output.textContent = JSON.stringify(details, null, 2)
+      }
+
+      try {
+        const languageIds = listLanguages().map((lang) => lang.id)
+        const themeIds = listThemes().map((theme) => theme.id)
+        const jsonTokens = tokenize('{"a":1,"ok":true}', 'json').flat()
+        const lightTheme = getTheme('github-light')
+
+        const result = {
+          languageIds,
+          themeIds,
+          jsonTokenCount: jsonTokens.length,
+          hasJsonStringStyle: !!lightTheme.styles['string.quoted.double.json']
+        }
+
+        const ok =
+          languageIds.includes('javascript') &&
+          languageIds.includes('json') &&
+          themeIds.includes('dark-plus') &&
+          themeIds.includes('github-light') &&
+          result.jsonTokenCount > 0 &&
+          result.hasJsonStringStyle
+
+        setResult(ok, result)
+      } catch (error) {
+        setResult(false, {
+          error: error instanceof Error ? error.message : String(error)
+        })
+      }
+
+      try {
+        const sampleCode = `const user = { name: "Coder Mate", score: 98 }
+const city = user?.address?.city ?? "Unknown"
+console.log(city)`
+        const html = highlightJavaScript(sampleCode, { theme: 'github-light' })
+        renderPreview.innerHTML = html
+        renderStatus.textContent = 'PASS'
+        renderStatus.className = 'ok'
+      } catch (error) {
+        renderStatus.textContent = 'FAIL'
+        renderStatus.className = 'fail'
+        renderPreview.textContent =
+          error instanceof Error ? error.message : String(error)
+      }
+    </script>
+  </body>
+</html>

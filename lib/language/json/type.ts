@@ -4,7 +4,7 @@ import type {
   ParserContext as CoreParserContext,
   Token as CoreToken,
   TokenStream as CoreTokenStream
-} from 'lib/core/types'
+} from '../../core/types'
 
 /**
  * JSON token scope

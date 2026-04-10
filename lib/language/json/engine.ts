@@ -6,7 +6,7 @@ import {
   popState as popStateCore,
   pushState as pushStateCore,
   splitTokenByLineBreak as splitTokenByLineBreakCore
-} from 'lib/core/tokenizer'
+} from '../../core/tokenizer'
 import { JSON_TOKENIZER_SPEC } from './spec'
 import type {
   GrammarState,

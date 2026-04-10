@@ -93,8 +93,27 @@ const result2 = (a + b) * (a - b) === 0 && a || b;`,
   "items": [1, 2, 3],
   "meta": null
 }`,
-  python: `# Python tokenizer is coming soon
-class Greeter:
-    def hello(self, name: str) -> str:
-        return f"Hello, {name}"`
+  python: `from typing import Optional
+
+@cache_result
+def format_user(name: str, score: float) -> str:
+    note = """multi-line
+python string"""
+    return f"{name!r}:{score:.2f} / {note!s}"
+
+class UserService:
+    def load(self, limit: int) -> list[str]:
+        values = [x for x in range(limit) if x > 0]
+
+        try:
+            with open("users.txt") as f:
+                first_line = f.read()
+        except OSError as err:
+            print(err)
+            first_line = "fallback"
+
+        if first_line is None:
+            return []
+
+        return [format_user(str(v), float(v)) for v in values]`
 }

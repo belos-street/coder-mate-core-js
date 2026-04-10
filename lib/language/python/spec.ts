@@ -3,20 +3,17 @@ import { GRAMMAR_RULES } from './rule'
 import type { GrammarState, TokenScope } from './type'
 
 /**
- * JavaScript 语言元数据
+ * Python language metadata
  */
-export const JAVASCRIPT_LANGUAGE_META = {
-  id: 'javascript',
-  aliases: ['js']
+export const PYTHON_LANGUAGE_META = {
+  id: 'python',
+  aliases: ['py']
 } as const
 
 /**
- * JavaScript 分词规范
+ * Python tokenizer spec
  */
-export const JAVASCRIPT_TOKENIZER_SPEC: TokenizerSpec<
-  GrammarState,
-  TokenScope
-> = {
+export const PYTHON_TOKENIZER_SPEC: TokenizerSpec<GrammarState, TokenScope> = {
   initialState: 'global',
   rules: GRAMMAR_RULES,
   fallbackScope: 'default'

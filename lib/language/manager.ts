@@ -4,7 +4,7 @@ import {
   listLanguages as listLanguagesCore,
   registerLanguage as registerLanguageCore,
   tokenize as tokenizeCore
-} from 'lib/core/registry'
+} from '../core/registry'
 import { BUILTIN_LANGUAGES } from './builtins'
 
 let builtinsRegistered = false

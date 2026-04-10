@@ -5,7 +5,7 @@ import type {
   ScopeStyleMap as CoreScopeStyleMap,
   Token as CoreToken,
   TokenStream as CoreTokenStream
-} from 'lib/core/types'
+} from '../../core/types'
 
 /**
  * ES2020 语法高亮器 - 类型定义

@@ -18,6 +18,7 @@ describe('语言注册中心', () => {
     const ids = languages.map((lang) => lang.id)
     expect(ids).toContain('javascript')
     expect(ids).toContain('json')
+    expect(ids).toContain('python')
   })
 
   test('支持通过 alias 使用语言（js -> javascript）', () => {

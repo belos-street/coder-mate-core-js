@@ -9,3 +9,4 @@ export {
 export { BUILTIN_LANGUAGES } from './builtins'
 export { javascriptLanguage, parse as parseJavaScript } from './javascript'
 export { jsonLanguage, parse as parseJSON } from './json'
+export { pythonLanguage, parse as parsePython } from './python'

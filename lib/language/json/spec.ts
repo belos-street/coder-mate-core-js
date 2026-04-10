@@ -1,4 +1,4 @@
-import type { TokenizerSpec } from 'lib/core/types'
+import type { TokenizerSpec } from '../../core/types'
 import { GRAMMAR_RULES } from './rule'
 import type { GrammarState, TokenScope } from './type'
 

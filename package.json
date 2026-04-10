@@ -1,11 +1,46 @@
 {
   "name": "coder-mate-core-js",
-  "module": "src/main.ts",
+  "module": "dist/index.js",
+  "types": "dist/types/lib/index.d.ts",
   "type": "module",
+  "files": [
+    "dist",
+    "dist-src"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/lib/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./language": {
+      "types": "./dist/types/lib/language/index.d.ts",
+      "import": "./dist/language.js",
+      "default": "./dist/language.js"
+    },
+    "./themes": {
+      "types": "./dist/types/lib/themes/index.d.ts",
+      "import": "./dist/themes.js",
+      "default": "./dist/themes.js"
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
     "dev": "vite",
-    "build": "bun build",
-    "bench:js-language": "bun scripts/bench-js-language.ts"
+    "clean:dist": "rm -rf dist",
+    "clean:dist-src": "rm -rf dist-src",
+    "build:lib:esm": "bun build ./lib/index.ts --outfile ./dist/index.js --format esm --target browser && bun build ./lib/language/index.ts --outfile ./dist/language.js --format esm --target browser && bun build ./lib/themes/index.ts --outfile ./dist/themes.js --format esm --target browser",
+    "build:lib:types": "bunx tsc -p tsconfig.build.json",
+    "build:lib": "bun run clean:dist && bun run build:lib:esm && bun run build:lib:types",
+    "build:src:esm": "bun build ./src/render.ts --outfile ./dist-src/render.js --format esm --target browser",
+    "build:src": "bun run clean:dist-src && bun run build:src:esm",
+    "build": "bun run build:lib && bun run build:src",
+    "test:build:import": "bun scripts/test-build-import.ts",
+    "test:build:src:import": "bun scripts/test-build-src-import.ts",
+    "verify:build": "bun run build && bun run test:build:import && bun run test:build:src:import",
+    "bench:js-language": "bun bench/bench-js-language.ts",
+    "bench:python-language": "bun bench/bench-python-language.ts",
+    "serve": "bunx serve ."
   },
   "devDependencies": {
     "@types/bun": "latest"
