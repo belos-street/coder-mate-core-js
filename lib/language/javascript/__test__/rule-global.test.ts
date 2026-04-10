@@ -170,6 +170,15 @@ describe('global 状态规则测试', () => {
       expect(result!.token.scope).toBe('keyword.control.module.js')
     })
 
+    test('export * as ... from 优先匹配具体规则', () => {
+      const context = createInitialContext()
+      const result = matchToken('export * as ns from "./module.js"', context)
+
+      expect(result).not.toBeNull()
+      expect(result!.token.text).toBe('export * as ns from')
+      expect(result!.token.scope).toBe('keyword.control.module.js')
+    })
+
     test('动态 import()', () => {
       const context = createInitialContext()
       const result = matchToken('import("./module.js")', context)

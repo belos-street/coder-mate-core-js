@@ -26,11 +26,11 @@ export const GRAMMAR_RULES: GrammarRulesMap = {
       pushState: 'import-dynamic'
     },
     {
-      regex: /^(import|export)\b/,
+      regex: /^(export)\s*\*\s*as\s*(\w+)\s*from/,
       scope: 'keyword.control.module.js'
     },
     {
-      regex: /^(export)\s*\*\s*as\s*(\w+)\s*from/,
+      regex: /^(import|export)\b/,
       scope: 'keyword.control.module.js'
     },
 
