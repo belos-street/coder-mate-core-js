@@ -9,12 +9,31 @@
 - `lib` 负责：分词引擎、语言注册、语言规则、主题映射。
 - `src` 负责：可视化展示和交互，不是核心引擎。
 
+## 1.1 项目内 Skill（`.agent`）【重要】
+
+本项目存在**本地技能系统**：`.agent/skills`。  
+后续任何 Agent 接手时，应把它视为本仓库的优先上下文，而不是只依赖通用默认行为。
+
+- 技能索引：`.agent/skills/agent.md`
+- 工作流建议：`brainstorming -> writing-plans -> implementation`
+- 核心技能：
+  - `brainstorming`：设计探索与需求澄清（先设计，后实现）
+  - `writing-plans`：把规格拆成可执行计划
+  - `belos-street`：个人代码规范与测试理念
+  - `bun`：Bun 运行时/工具链约定（强调 Bun 优先）
+
+补充说明：
+
+- 当前技能文件名同时存在 `SKILL.md` 与 `skill.md`（大小写混用），读取时按实际文件路径处理。
+- 如果任务与 `.agent/skills` 约定冲突，优先遵守项目内技能约定。
+
 ## 2. 当前能力（截至当前代码）
 
 ### 已支持语言
 
 - `javascript`（较完整，测试覆盖高）
 - `json`（首版可用）
+- `python`（已支持三引号、f-string、装饰器、类型注解、comprehension、`as` 别名等实用语法）
 
 ### 已支持主题
 
@@ -76,6 +95,14 @@ lib/
       __test__/
 
     json/
+      type.ts
+      rule.ts
+      spec.ts
+      engine.ts
+      index.ts
+      __test__/
+
+    python/
       type.ts
       rule.ts
       spec.ts
@@ -203,6 +230,8 @@ interface LanguageAdapter {
 bun test
 bunx tsc --noEmit
 bun run bench:js-language
+bun run bench:python-language
+bun run verify:build
 ```
 
 说明：
@@ -215,13 +244,14 @@ bun run bench:js-language
 ### 已知边界
 
 - JSON 当前是首版 tokenizer，不含 JSON5 特性（注释、单引号、尾逗号等）。
+- Python 当前是“实用增强版”，尚未覆盖全部复杂语法细节（例如超复杂模板/宏式写法）。
 - `src/render.ts` 目前仍有 `highlightJavaScript` 便捷函数，通用场景建议走 `tokenize + renderHtml`。
 - 主题映射仍是以具体 scope 为主，后续可升级为 “语义 token 层” 进一步去语言耦合。
 
 ### 建议优先级
 
 1. 抽象 semantic token（`scope -> semantic -> style`）。
-2. 新增 `python` 语言包（验证缩进/关键字处理边界）。
+2. 新增 `typescript` / `html` / `css` / `bash` 等高频语言。
 3. 补 README（当前 README 仍是 Bun 初始化模板，和真实项目结构不一致）。
 
 ## 13. 给大模型的快速工作策略
@@ -238,10 +268,12 @@ bun run bench:js-language
 
 如果你是第一次接手这个项目，推荐阅读顺序：
 
+1. `.agent/skills/agent.md`
 1. `lib/core/tokenizer.ts`
 2. `lib/core/registry.ts`
 3. `lib/language/manager.ts`
 4. `lib/language/javascript/*`
 5. `lib/language/json/*`
-6. `lib/themes/index.ts`
-7. `src/demo/app.ts`
+6. `lib/language/python/*`
+7. `lib/themes/index.ts`
+8. `src/demo/app.ts`
