@@ -8,32 +8,42 @@ import {
 } from '../index'
 import type { LanguageAdapter } from '../../core/registry'
 
-describe('语言注册中心', () => {
+describe('language registry', () => {
   beforeEach(() => {
     resetLanguageRegistryForTest()
   })
 
-  test('默认内置语言会自动注册', () => {
+  test('registers builtin languages automatically', () => {
     const languages = listLanguages()
     const ids = languages.map((lang) => lang.id)
+
     expect(ids).toContain('javascript')
+    expect(ids).toContain('typescript')
     expect(ids).toContain('json')
     expect(ids).toContain('python')
   })
 
-  test('支持通过 alias 使用语言（js -> javascript）', () => {
+  test('supports JavaScript alias (js -> javascript)', () => {
     const tokens = tokenize('const x = 1;', 'js')
+
     expect(tokens.length).toBeGreaterThan(0)
     expect(tokens[0]![0]!.text).toBe('const')
   })
 
-  test('未知语言会抛出错误', () => {
+  test('supports TypeScript alias (ts -> typescript)', () => {
+    const tokens = tokenize('type UserId = string', 'ts')
+
+    expect(tokens.length).toBeGreaterThan(0)
+    expect(tokens[0]![0]!.text).toBe('type')
+  })
+
+  test('throws for unknown language', () => {
     expect(() => tokenize('x', 'unknown-lang')).toThrow(
       'Language "unknown-lang" is not registered'
     )
   })
 
-  test('可注册自定义语言并访问', () => {
+  test('registers and resolves custom languages', () => {
     const customLanguage: LanguageAdapter = {
       id: 'plain',
       aliases: ['txt'],
@@ -44,6 +54,7 @@ describe('语言注册中心', () => {
 
     const byId = getLanguage('plain')
     const byAlias = getLanguage('txt')
+
     expect(byId).toBeDefined()
     expect(byAlias).toBeDefined()
     expect(tokenize('hello', 'txt')[0]![0]!.text).toBe('hello')

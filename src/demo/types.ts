@@ -1,4 +1,4 @@
-export const LANGUAGE_ORDER = ['javascript', 'json', 'python'] as const
+export const LANGUAGE_ORDER = ['javascript', 'typescript', 'json', 'python'] as const
 
 export type LanguageId = (typeof LANGUAGE_ORDER)[number]
 

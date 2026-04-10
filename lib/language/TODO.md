@@ -10,7 +10,7 @@
 
 ## P0（优先，建议先做）
 
-- [ ] `typescript`
+- [x] `typescript`
   - 说明：前端/Node 场景最常见，和现有 `javascript` 规则复用度高，投入小、收益大。
 
 - [ ] `html`

@@ -2,6 +2,7 @@ import type { LanguageId } from './types'
 
 export const LANGUAGE_LABELS: Record<LanguageId, string> = {
   javascript: 'JavaScript',
+  typescript: 'TypeScript',
   json: 'JSON',
   python: 'Python'
 }
@@ -85,6 +86,71 @@ const obj = {
 // 11. 运算符
 const a = 10, b = 20;
 const result2 = (a + b) * (a - b) === 0 && a || b;`,
+  typescript: `import type { ApiUser, ApiResponse } from "./types"
+export type UserId = string | number
+
+interface User {
+  readonly id: UserId
+  name: string
+  role?: "admin" | "guest"
+}
+
+type ValueOf<T> = T[keyof T]
+type UnboxPromise<T> = T extends Promise<infer R> ? R : T
+type EventName<T extends string> = \`on\${Capitalize<T>}\`
+
+type ReadonlyPick<T, K extends keyof T> = {
+  readonly [P in K]?: T[P]
+}
+
+type Pair = [head: string, ...tail: number[]]
+
+enum Status {
+  Active = "active",
+  Disabled = "disabled"
+}
+
+abstract class BaseService<T extends object> {
+  protected cache = new Map<string, T>()
+}
+
+class UserService<T extends User> extends BaseService<T> implements User {
+  public id: UserId = 1
+  public name: string = "coder"
+  public role: "admin" | "guest" = "admin"
+  private status: Status = Status.Active
+
+  constructor(name: string) {
+    super()
+    this.name = name
+  }
+
+  get profile(): ReadonlyPick<T, "id" | "name"> {
+    return { id: this.id as T["id"], name: this.name as T["name"] }
+  }
+
+  async load<R extends ApiResponse<ApiUser>>(resp: R): Promise<UnboxPromise<Promise<R>>> {
+    return Promise.resolve(resp)
+  }
+}
+
+function isUser(value: unknown): value is User {
+  return typeof value === "object" && value !== null
+}
+
+const defaultConfig = {
+  retry: 3,
+  mode: "strict"
+} as const
+
+const settings = {
+  cache: true,
+  strategy: "lru"
+} satisfies Record<string, unknown>
+
+const service = new UserService<User>("Alice")
+const role = service.profile.name!.toUpperCase()
+const city: string = profile?.address?.city ?? "Unknown"`,
   json: `{
   "project": "coder-mate-core-js",
   "version": 1,

@@ -205,7 +205,7 @@ export const GRAMMAR_RULES: GrammarRulesMap = {
       scope: 'constant.language.js'
     },
     {
-      regex: /^(\?\.)|(\?\?)/,
+      regex: /^(\?\.|\?\?)/,
       scope: 'operator.js'
     },
     {

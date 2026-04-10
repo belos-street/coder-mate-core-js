@@ -20,6 +20,10 @@ export const githubLightTheme: HighlightTheme = {
     'keyword.control.module.js': 'color: #D73A49;',
     'keyword.control.import.js': 'color: #D73A49;',
     'keyword.declaration.js': 'color: #D73A49;',
+    'keyword.declaration.type.typescript': 'color: #D73A49; font-weight: bold;',
+    'keyword.modifier.access.typescript': 'color: #005CC5;',
+    'keyword.operator.assertion.typescript': 'color: #6F42C1;',
+    'keyword.operator.type.typescript': 'color: #6F42C1;',
     'keyword.control.python': 'color: #D73A49;',
     'keyword.declaration.python': 'color: #D73A49; font-weight: bold;',
     'entity.name.function.python': 'color: #6F42C1;',
@@ -39,6 +43,7 @@ export const githubLightTheme: HighlightTheme = {
     'constant.language.none.python': 'color: #005CC5;',
     'constant.numeric.python': 'color: #005CC5;',
     'variable.language.global-this.js': 'color: #6F42C1; font-weight: bold;',
+    'support.type.builtin.typescript': 'color: #005CC5;',
 
     'string.quoted.double.js': 'color: #032F62;',
     'string.quoted.single.js': 'color: #032F62;',
@@ -66,6 +71,7 @@ export const githubLightTheme: HighlightTheme = {
     'punctuation.format.fstring.python': 'color: #B08800;',
 
     'variable.identifier.js': 'color: #24292F;',
+    'entity.name.type.typescript': 'color: #005CC5;',
     'variable.alias.python': 'color: #005CC5; font-style: italic;',
     'variable.comprehension.python': 'color: #24292F;',
     'variable.identifier.python': 'color: #24292F;',
