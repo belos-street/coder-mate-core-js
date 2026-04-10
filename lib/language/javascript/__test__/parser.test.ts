@@ -131,6 +131,25 @@ describe('解析引擎测试', () => {
       expect(tokens[1]![0]!.line).toBe(2)
       expect(tokens[1]![0]!.col).toEqual([1, 1])
     })
+
+    test('parse - 跨行注释后续 token 行号连续', () => {
+      const code = '/*a\nb*/\nconst x = 1;'
+      const tokens = parse(code)
+
+      expect(tokens.length).toBe(3)
+
+      // 第二行末尾换行符应在第 2 行
+      const secondLineBreak = tokens[1]!.find((t) => t.text === '\n')
+      expect(secondLineBreak).toBeDefined()
+      expect(secondLineBreak!.line).toBe(2)
+
+      // 第三行首个 token 应在第 3 行
+      const thirdLineFirstToken = tokens[2]![0]
+      expect(thirdLineFirstToken).toBeDefined()
+      expect(thirdLineFirstToken!.text).toBe('const')
+      expect(thirdLineFirstToken!.line).toBe(3)
+      expect(thirdLineFirstToken!.col[0]).toBe(1)
+    })
   })
 
   describe('跨行 token 拆分', () => {

@@ -277,15 +277,18 @@ export const parse = (code: string): TokenStream => {
             rows.push(currentRowTokens)
             currentRowTokens = []
             context = {
-              ...newContext,
-              line: context.line + 1,
+              ...context,
+              stateStack: newContext.stateStack,
+              line: splitToken.line + 1,
               col: 1
             }
           } else {
             // 普通 Token：加入当前行，更新列号
             currentRowTokens.push(splitToken)
             context = {
-              ...newContext,
+              ...context,
+              stateStack: newContext.stateStack,
+              line: splitToken.line,
               col: splitToken.col[1] + 1
             }
           }

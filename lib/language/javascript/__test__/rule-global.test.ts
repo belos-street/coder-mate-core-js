@@ -183,7 +183,7 @@ describe('global 状态规则测试', () => {
 
   describe('运算符', () => {
     test('比较运算符', () => {
-      const operators = ['===', '!==', '==', '!=']
+      const operators = ['===', '!==', '==', '!=', '>=', '<=']
       
       operators.forEach(op => {
         const context = createInitialContext()
