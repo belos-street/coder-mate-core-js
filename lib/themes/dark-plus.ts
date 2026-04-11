@@ -13,6 +13,7 @@ export const darkPlusTheme: HighlightTheme = {
     'comment.line.double-slash.js': 'color: #6A9955;',
     'comment.block.js': 'color: #6A9955; font-style: italic;',
     'comment.line.number-sign.python': 'color: #6A9955;',
+    'comment.block.html': 'color: #6A9955; font-style: italic;',
 
     'keyword.control.js': 'color: #569CD6;',
     'keyword.control.async.js': 'color: #C586C0;',
@@ -31,6 +32,7 @@ export const darkPlusTheme: HighlightTheme = {
     'support.function.builtin.python': 'color: #DCDCAA; font-weight: bold;',
     'support.type.annotation.python': 'color: #4EC9B0;',
     'meta.decorator.python': 'color: #C586C0;',
+    'keyword.control.doctype.html': 'color: #C586C0;',
 
     'constant.language.boolean.js': 'color: #569CD6;',
     'constant.language.null.js': 'color: #569CD6;',
@@ -54,6 +56,9 @@ export const darkPlusTheme: HighlightTheme = {
     'string.quoted.double.triple.python': 'color: #CE9178;',
     'string.quoted.single.triple.python': 'color: #CE9178;',
     'string.interpolated.python': 'color: #CE9178;',
+    'string.quoted.double.html': 'color: #CE9178;',
+    'string.quoted.single.html': 'color: #CE9178;',
+    'string.unquoted.html': 'color: #CE9178;',
 
     'operator.js': 'color: #D4D4D4;',
     'operator.optional-chaining.js': 'color: #DCDCAA; font-weight: bold;',
@@ -69,13 +74,20 @@ export const darkPlusTheme: HighlightTheme = {
     'punctuation.definition.interpolation.begin.python': 'color: #C586C0;',
     'punctuation.definition.interpolation.end.python': 'color: #C586C0;',
     'punctuation.format.fstring.python': 'color: #D7BA7D;',
+    'punctuation.definition.tag.begin.html': 'color: #808080;',
+    'punctuation.definition.tag.end.html': 'color: #808080;',
+    'punctuation.separator.key-value.html': 'color: #D4D4D4;',
 
     'variable.identifier.js': 'color: #9CDCFE;',
     'entity.name.type.typescript': 'color: #4EC9B0;',
+    'entity.name.tag.html': 'color: #569CD6;',
+    'entity.other.attribute-name.html': 'color: #9CDCFE;',
     'variable.alias.python': 'color: #9CDCFE; font-style: italic;',
     'variable.comprehension.python': 'color: #9CDCFE;',
     'variable.identifier.python': 'color: #9CDCFE;',
     'support.function.promise.js': 'color: #DCDCAA; font-weight: bold;',
+    'constant.character.entity.html': 'color: #D7BA7D;',
+    'text.plain.html': 'color: #D4D4D4;',
 
     default: 'color: #D4D4D4;'
   }

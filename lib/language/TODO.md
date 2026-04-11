@@ -3,6 +3,8 @@
 当前已支持：
 
 - `javascript`
+- `typescript`
+- `html`
 - `json`
 - `python`
 
@@ -13,7 +15,7 @@
 - [x] `typescript`
   - 说明：前端/Node 场景最常见，和现有 `javascript` 规则复用度高，投入小、收益大。
 
-- [ ] `html`
+- [x] `html`
   - 说明：Web 展示必备语言，可与 JS/CSS 形成完整前端代码块高亮组合。
 
 - [ ] `css`

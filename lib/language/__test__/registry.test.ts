@@ -19,6 +19,7 @@ describe('language registry', () => {
 
     expect(ids).toContain('javascript')
     expect(ids).toContain('typescript')
+    expect(ids).toContain('html')
     expect(ids).toContain('json')
     expect(ids).toContain('python')
   })
@@ -35,6 +36,14 @@ describe('language registry', () => {
 
     expect(tokens.length).toBeGreaterThan(0)
     expect(tokens[0]![0]!.text).toBe('type')
+  })
+
+  test('supports HTML alias (htm -> html)', () => {
+    const tokens = tokenize('<div>hello</div>', 'htm')
+    const flatTokens = tokens.flat()
+
+    expect(tokens.length).toBeGreaterThan(0)
+    expect(flatTokens.some((t) => t.scope === 'entity.name.tag.html')).toBe(true)
   })
 
   test('throws for unknown language', () => {
