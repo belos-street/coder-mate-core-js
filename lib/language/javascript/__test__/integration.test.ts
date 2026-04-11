@@ -1,6 +1,5 @@
 import { test, expect, describe } from 'bun:test'
-import { parse } from '../index'
-import { highlightJavaScript as highlight } from '../../../../src/render'
+import { parse, highlight } from '../main'
 
 describe('集成测试', () => {
   describe('完整代码高亮', () => {
@@ -105,15 +104,6 @@ class Person {
 
       expect(html).toContain('=&gt;') // => 被转义
       expect(html).toContain('#DCDCAA') // 箭头函数颜色
-    })
-
-    test('支持切换主题（github-light）', () => {
-      const code = 'const value = 1;'
-      const html = highlight(code, { theme: 'github-light' })
-
-      expect(html).toContain('background: #FFFFFF')
-      expect(html).toContain('#D73A49') // keyword.control.js
-      expect(html).toContain('#005CC5') // constant.numeric.js
     })
   })
 

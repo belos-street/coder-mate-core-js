@@ -39,6 +39,7 @@
     "test:build:src:import": "bun scripts/test-build-src-import.ts",
     "verify:build": "bun run build && bun run test:build:import && bun run test:build:src:import",
     "bench:js-language": "bun bench/bench-js-language.ts",
+    "bench:typescript-language": "bun bench/bench-typescript-language.ts",
     "bench:python-language": "bun bench/bench-python-language.ts",
     "serve": "bunx serve ."
   },
