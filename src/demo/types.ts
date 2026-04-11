@@ -1,6 +1,18 @@
 export const LANGUAGE_ORDER = [
   'javascript',
   'typescript',
+  'css',
+  'bash',
+  'sql',
+  'yaml',
+  'markdown',
+  'java',
+  'c',
+  'cpp',
+  'go',
+  'rust',
+  'csharp',
+  'php',
   'html',
   'json',
   'python'
