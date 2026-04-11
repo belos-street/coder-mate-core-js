@@ -1,24 +1,43 @@
-import { listLanguages, tokenize } from 'lib/language'
-import { getTheme, listThemes } from 'lib/themes'
-import { escapeHtml, renderHtml } from '../render'
+import { codeToHtml, codeToTokens } from 'lib'
+import { escapeHtml } from '../render'
 import { LANGUAGE_LABELS, LANGUAGE_SNIPPETS } from './languages'
 import { LANGUAGE_ORDER, type DemoState, type LanguageId } from './types'
 
-const builtinLanguages = new Set(listLanguages().map((language) => language.id))
-const themeList = listThemes()
+const THEME_LIST = [
+  { id: 'dark-plus', displayName: 'Dark+' },
+  { id: 'github-light', displayName: 'GitHub Light' },
+  { id: 'dracula', displayName: 'Dracula' },
+  { id: 'one-dark-pro', displayName: 'One Dark Pro' },
+  { id: 'nord', displayName: 'Nord' },
+  { id: 'monokai', displayName: 'Monokai' },
+  { id: 'material-ocean', displayName: 'Material Ocean' },
+  { id: 'tokyo-night', displayName: 'Tokyo Night' },
+  { id: 'solarized-dark', displayName: 'Solarized Dark' },
+  { id: 'solarized-light', displayName: 'Solarized Light' }
+] as const
+
+type ThemeId = (typeof THEME_LIST)[number]['id']
+
+const supportedLanguages = new Set<LanguageId>()
+for (const languageId of LANGUAGE_ORDER) {
+  try {
+    codeToTokens('', { lang: languageId })
+    supportedLanguages.add(languageId)
+  } catch {
+    // Ignore unsupported demo language entries
+  }
+}
 
 const isLanguageSupported = (languageId: LanguageId): boolean =>
-  builtinLanguages.has(languageId)
+  supportedLanguages.has(languageId)
 
 const renderThemeTabs = (state: DemoState): string =>
-  themeList
-    .map((theme) => {
-      const activeClass = theme.id === state.themeId ? 'is-active' : ''
-      return `<button class="tab-btn ${activeClass}" data-role="theme-tab" data-theme="${theme.id}" title="${theme.displayName}">
+  THEME_LIST.map((theme) => {
+    const activeClass = theme.id === state.themeId ? 'is-active' : ''
+    return `<button class="tab-btn ${activeClass}" data-role="theme-tab" data-theme="${theme.id}" title="${theme.displayName}">
   <span>${theme.displayName}</span>
 </button>`
-    })
-    .join('')
+  }).join('')
 
 const renderLanguageTabs = (state: DemoState): string =>
   LANGUAGE_ORDER.map((languageId) => {
@@ -36,22 +55,22 @@ const renderLanguageTabs = (state: DemoState): string =>
 const renderPreview = (state: DemoState): string => {
   if (!isLanguageSupported(state.languageId)) {
     return `<div class="placeholder">
-  <h3>${LANGUAGE_LABELS[state.languageId]} 解析器尚未接入</h3>
-  <p>核心引擎已支持多语言注册，这里先保留 Tab 结构，后续接入语言后可直接展示。</p>
+  <h3>${LANGUAGE_LABELS[state.languageId]} parser is not available yet</h3>
+  <p>This tab is reserved for upcoming language support.</p>
   <pre class="plain-code"><code>${escapeHtml(state.code)}</code></pre>
 </div>`
   }
 
   try {
-    const rows = tokenize(state.code, state.languageId)
-    return renderHtml(rows, {
+    return codeToHtml(state.code, {
+      lang: state.languageId,
       theme: state.themeId,
       lineClassPrefix: `${state.languageId}-line-`
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error'
     return `<div class="placeholder error">
-  <h3>渲染失败</h3>
+  <h3>Render failed</h3>
   <p>${escapeHtml(message)}</p>
 </div>`
   }
@@ -59,43 +78,46 @@ const renderPreview = (state: DemoState): string => {
 
 export const mountDemoApp = (container: HTMLElement): void => {
   const state: DemoState = {
-    themeId: themeList[0]?.id ?? 'dark-plus',
+    themeId: THEME_LIST[0]?.id ?? 'dark-plus',
     languageId: 'javascript',
     code: LANGUAGE_SNIPPETS.javascript
   }
 
   const render = (): void => {
-    const currentTheme = getTheme(state.themeId)
-    const supportLabel = isLanguageSupported(state.languageId) ? '可用' : '未接入'
+    const currentTheme =
+      THEME_LIST.find((theme) => theme.id === state.themeId) ?? THEME_LIST[0]
+    const supportLabel = isLanguageSupported(state.languageId)
+      ? 'Available'
+      : 'Coming soon'
 
     container.innerHTML = `<div class="demo-shell">
   <header class="hero">
     <h1>Coder Mate Language Playground</h1>
-    <p>用同一套核心引擎测试语言分词和主题映射，先把 Demo 交互结构搭好。</p>
+    <p>Try syntax tokenization and theme rendering with a single API pair: codeToTokens + codeToHtml.</p>
   </header>
 
   <section class="control-grid">
     <article class="panel">
-      <h2>TabPane - 主题</h2>
+      <h2>TabPane - Theme</h2>
       <div class="tabs" role="tablist">${renderThemeTabs(state)}</div>
-      <p class="hint">当前主题：<strong>${currentTheme.displayName}</strong></p>
+      <p class="hint">Current theme: <strong>${currentTheme?.displayName ?? 'Dark+'}</strong></p>
     </article>
 
     <article class="panel">
-      <h2>TabPane - 语言</h2>
+      <h2>TabPane - Language</h2>
       <div class="tabs" role="tablist">${renderLanguageTabs(state)}</div>
-      <p class="hint">当前语言：<strong>${LANGUAGE_LABELS[state.languageId]}</strong> · ${supportLabel}</p>
+      <p class="hint">Current language: <strong>${LANGUAGE_LABELS[state.languageId]}</strong> - ${supportLabel}</p>
     </article>
   </section>
 
   <section class="workspace">
     <article class="editor-card">
-      <label for="code-input">代码输入</label>
+      <label for="code-input">Code Input</label>
       <textarea id="code-input" spellcheck="false">${escapeHtml(state.code)}</textarea>
     </article>
 
     <article class="preview-card">
-      <div class="preview-title">预览</div>
+      <div class="preview-title">Preview</div>
       <div class="preview-body">${renderPreview(state)}</div>
     </article>
   </section>
@@ -114,8 +136,9 @@ export const mountDemoApp = (container: HTMLElement): void => {
     )
     themeButtons.forEach((button) => {
       button.addEventListener('click', () => {
-        const nextTheme = button.dataset.theme
+        const nextTheme = button.dataset.theme as ThemeId | undefined
         if (!nextTheme || nextTheme === state.themeId) return
+
         state.themeId = nextTheme
         render()
       })

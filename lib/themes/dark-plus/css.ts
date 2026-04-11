@@ -1,0 +1,30 @@
+import type { ThemeStyleMap } from '../types'
+
+/**
+ * Dark+ styles: CSS
+ */
+export const darkPlusCssStyles: ThemeStyleMap = {
+  'comment.block.css': 'color: #6A9955; font-style: italic;',
+  'constant.numeric.css': 'color: #B5CEA8;',
+  'constant.other.color.hex.css': 'color: #D7BA7D;',
+  'entity.name.tag.css': 'color: #569CD6;',
+  'entity.other.attribute-name.class.css': 'color: #4EC9B0;',
+  'entity.other.attribute-name.id.css': 'color: #C586C0;',
+  'entity.other.attribute-name.pseudo-class.css': 'color: #DCDCAA;',
+  'entity.other.attribute-name.pseudo-element.css': 'color: #DCDCAA;',
+  'keyword.control.at-rule.css': 'color: #C586C0;',
+  'keyword.other.important.css': 'color: #D16969; font-weight: bold;',
+  'operator.css': 'color: #D4D4D4;',
+  'punctuation.definition.attribute.begin.css': 'color: #808080;',
+  'punctuation.definition.attribute.end.css': 'color: #808080;',
+  'punctuation.section.block.begin.css': 'color: #808080;',
+  'punctuation.section.block.end.css': 'color: #808080;',
+  'punctuation.separator.key-value.css': 'color: #D4D4D4;',
+  'punctuation.separator.selector.css': 'color: #D4D4D4;',
+  'punctuation.terminator.rule.css': 'color: #D4D4D4;',
+  'string.quoted.double.css': 'color: #CE9178;',
+  'string.quoted.single.css': 'color: #CE9178;',
+  'support.function.css': 'color: #DCDCAA;',
+  'support.type.property-name.css': 'color: #9CDCFE;',
+  'variable.parameter.custom-property.css': 'color: #4EC9B0;',
+}

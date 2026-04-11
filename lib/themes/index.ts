@@ -1,8 +1,20 @@
-import { darkPlusTheme } from './dark-plus'
-import { githubLightTheme } from './github-light'
+import { darkPlusTheme } from './dark-plus/index'
+import { githubLightTheme, presetBuiltInThemes } from './presets'
 import type { HighlightTheme } from './types'
 
 export type { HighlightTheme, ThemeStyleMap } from './types'
+export { darkPlusTheme } from './dark-plus/index'
+export { githubLightTheme } from './presets'
+export {
+  draculaTheme,
+  oneDarkProTheme,
+  nordTheme,
+  monokaiTheme,
+  materialOceanTheme,
+  tokyoNightTheme,
+  solarizedDarkTheme,
+  solarizedLightTheme
+} from './presets'
 
 export const DEFAULT_THEME_ID = darkPlusTheme.id
 
@@ -73,4 +85,4 @@ export const resolveTheme = (
 }
 
 registerTheme(darkPlusTheme)
-registerTheme(githubLightTheme)
+presetBuiltInThemes.forEach((theme) => registerTheme(theme))
