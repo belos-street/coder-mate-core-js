@@ -178,7 +178,17 @@ describe('language registry', () => {
     const customLanguage: LanguageAdapter = {
       id: 'plain',
       aliases: ['txt'],
-      parse: (code) => [[{ text: code, scope: 'default', line: 1, col: [1, code.length] }]]
+      parse: (code) => [
+        [
+          {
+            text: code,
+            scope: 'default',
+            line: 1,
+            col: [1, code.length],
+            style: {}
+          }
+        ]
+      ]
     }
 
     registerLanguage(customLanguage)

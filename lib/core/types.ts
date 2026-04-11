@@ -1,19 +1,27 @@
-/**
- * 语言无关的核心类型定义
+﻿/**
+ * Language-agnostic core types
  */
 
 /**
- * 单个词法单元
+ * CSS style object attached to each token
+ */
+export interface TokenStyle {
+  [cssProperty: string]: string
+}
+
+/**
+ * A single lexical token
  */
 export interface Token<Scope extends string = string> {
   text: string
   scope: Scope
   line: number
   col: [number, number]
+  style: TokenStyle
 }
 
 /**
- * 状态机规则
+ * FSM grammar rule
  */
 export interface GrammarRule<
   State extends string = string,
@@ -27,7 +35,7 @@ export interface GrammarRule<
 }
 
 /**
- * 解析上下文
+ * Parser context
  */
 export interface ParserContext<State extends string = string> {
   stateStack: State[]
@@ -36,7 +44,7 @@ export interface ParserContext<State extends string = string> {
 }
 
 /**
- * 状态到规则的映射
+ * State -> rules mapping
  */
 export type GrammarRulesMap<
   State extends string = string,
@@ -44,17 +52,17 @@ export type GrammarRulesMap<
 > = Record<State, GrammarRule<State, Scope>[]>
 
 /**
- * 按行组织的 token 流
+ * 2D token stream grouped by line
  */
 export type TokenStream<Scope extends string = string> = Token<Scope>[][]
 
 /**
- * scope 到 CSS 样式映射
+ * scope -> CSS style text mapping
  */
 export type ScopeStyleMap<Scope extends string = string> = Record<Scope, string>
 
 /**
- * 通用词法规范
+ * Tokenizer specification
  */
 export interface TokenizerSpec<
   State extends string = string,

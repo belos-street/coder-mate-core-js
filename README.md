@@ -88,38 +88,56 @@ bun install
 ## 快速开始
 
 ```ts
-import { codeToHtml, codeToTokens } from 'coder-mate-core-js'
+import { createHighlighter } from 'coder-mate-core-js'
 
 const code = `const answer: number = 42`
+const highlighter = createHighlighter({
+  theme: 'github-light'
+})
 
-const tokens = codeToTokens(code, {
+const tokens = await highlighter.codeToTokens(code, {
   lang: 'typescript'
 })
 
-const html = codeToHtml(code, {
-  lang: 'typescript',
-  theme: 'github-light'
+const html = await highlighter.codeToHtml(code, {
+  lang: 'typescript'
 })
+
+await highlighter.updateTheme('dark-plus')
 ```
 
 ### API
 
-#### `codeToTokens(code, options)`
+#### `createHighlighter(options?)`
 
-- `code: string`
-- `options.lang: string`（必填）
-
-返回：`TokenStream`
-
-#### `codeToHtml(code, options)`
-
-- `code: string`
-- `options.lang: string`（必填）
 - `options.theme?: string | HighlightTheme`
 - `options.preStyle?: string`
 - `options.lineClassPrefix?: string`
 
+返回：`Highlighter` 实例（包含 `codeToTokens / codeToHtml / updateTheme`）
+
+#### `highlighter.codeToTokens(code, options)`
+
+- `code: string`
+- `options.lang: string`（必填）
+
+返回：`TokenStream`（每个 token 都包含 `style` 对象，如 `color`、`font-style`）
+
+#### `highlighter.codeToHtml(code, options)`
+
+- `code: string`
+- `options.lang: string`（必填）
+- `options.preStyle?: string`
+- `options.lineClassPrefix?: string`
+
 返回：HTML 字符串（`<pre><code>...</code></pre>`）
+
+#### `highlighter.updateTheme(theme)`
+
+- `theme: string | HighlightTheme`
+
+更新当前 highlighter 主题。  
+对于已经解析过并缓存的 `(code, lang)`，只会重新计算 token 的 `style`，不会重复分词。
 
 主题别名：
 
@@ -163,7 +181,7 @@ const html = codeToHtml(code, {
 
 ```text
 lib/
-  api.ts                  # 根 API：codeToTokens / codeToHtml
+  api.ts                  # 根 API：createHighlighter（实例含 codeToTokens/codeToHtml/updateTheme）
   index.ts                # 根导出
 
   core/

@@ -1,4 +1,5 @@
-import { codeToHtml, codeToTokens } from 'lib'
+import { createHighlighter } from 'lib'
+import { listLanguages } from 'lib/language'
 import { escapeHtml } from '../render'
 import { LANGUAGE_LABELS, LANGUAGE_SNIPPETS } from './languages'
 import { LANGUAGE_ORDER, type DemoState, type LanguageId } from './types'
@@ -18,15 +19,9 @@ const THEME_LIST = [
 
 type ThemeId = (typeof THEME_LIST)[number]['id']
 
-const supportedLanguages = new Set<LanguageId>()
-for (const languageId of LANGUAGE_ORDER) {
-  try {
-    codeToTokens('', { lang: languageId })
-    supportedLanguages.add(languageId)
-  } catch {
-    // Ignore unsupported demo language entries
-  }
-}
+const supportedLanguages = new Set<string>(
+  listLanguages().map((language) => language.id.toLowerCase())
+)
 
 const isLanguageSupported = (languageId: LanguageId): boolean =>
   supportedLanguages.has(languageId)
@@ -52,7 +47,10 @@ const renderLanguageTabs = (state: DemoState): string =>
 </button>`
   }).join('')
 
-const renderPreview = (state: DemoState): string => {
+const renderPreview = async (
+  state: DemoState,
+  highlighter: ReturnType<typeof createHighlighter>
+): Promise<string> => {
   if (!isLanguageSupported(state.languageId)) {
     return `<div class="placeholder">
   <h3>${LANGUAGE_LABELS[state.languageId]} parser is not available yet</h3>
@@ -62,9 +60,8 @@ const renderPreview = (state: DemoState): string => {
   }
 
   try {
-    return codeToHtml(state.code, {
+    return await highlighter.codeToHtml(state.code, {
       lang: state.languageId,
-      theme: state.themeId,
       lineClassPrefix: `${state.languageId}-line-`
     })
   } catch (error) {
@@ -82,18 +79,24 @@ export const mountDemoApp = (container: HTMLElement): void => {
     languageId: 'javascript',
     code: LANGUAGE_SNIPPETS.javascript
   }
+  const highlighter = createHighlighter({ theme: state.themeId })
+  let renderVersion = 0
 
-  const render = (): void => {
+  const render = async (): Promise<void> => {
+    const currentVersion = ++renderVersion
     const currentTheme =
       THEME_LIST.find((theme) => theme.id === state.themeId) ?? THEME_LIST[0]
     const supportLabel = isLanguageSupported(state.languageId)
       ? 'Available'
       : 'Coming soon'
+    const previewHtml = await renderPreview(state, highlighter)
+
+    if (currentVersion !== renderVersion) return
 
     container.innerHTML = `<div class="demo-shell">
   <header class="hero">
     <h1>Coder Mate Language Playground</h1>
-    <p>Try syntax tokenization and theme rendering with a single API pair: codeToTokens + codeToHtml.</p>
+    <p>Try syntax tokenization and theme rendering with createHighlighter.</p>
   </header>
 
   <section class="control-grid">
@@ -118,7 +121,7 @@ export const mountDemoApp = (container: HTMLElement): void => {
 
     <article class="preview-card">
       <div class="preview-title">Preview</div>
-      <div class="preview-body">${renderPreview(state)}</div>
+      <div class="preview-body">${previewHtml}</div>
     </article>
   </section>
 </div>`
@@ -127,7 +130,7 @@ export const mountDemoApp = (container: HTMLElement): void => {
     if (textarea) {
       textarea.addEventListener('input', () => {
         state.code = textarea.value
-        render()
+        void render()
       })
     }
 
@@ -140,7 +143,10 @@ export const mountDemoApp = (container: HTMLElement): void => {
         if (!nextTheme || nextTheme === state.themeId) return
 
         state.themeId = nextTheme
-        render()
+        void (async () => {
+          await highlighter.updateTheme(nextTheme)
+          await render()
+        })()
       })
     })
 
@@ -154,10 +160,10 @@ export const mountDemoApp = (container: HTMLElement): void => {
 
         state.languageId = nextLanguage
         state.code = LANGUAGE_SNIPPETS[nextLanguage]
-        render()
+        void render()
       })
     })
   }
 
-  render()
+  void render()
 }

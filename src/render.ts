@@ -1,5 +1,5 @@
+import { tokenize } from 'lib/language'
 import type { TokenStream } from 'lib/core/types'
-import { parse as parseJavaScript } from 'lib/language/javascript'
 import type { HighlightTheme } from 'lib/themes'
 import { resolveScopeStyle, resolveTheme } from 'lib/themes'
 
@@ -27,6 +27,15 @@ export const escapeHtml = (text: string): string => {
     .replace(/\t/g, '&#9;')
 }
 
+const stringifyInlineStyle = (style: Record<string, string>): string => {
+  const entries = Object.entries(style)
+  if (entries.length === 0) return ''
+
+  return entries
+    .map(([property, value]) => `${property}: ${value};`)
+    .join(' ')
+}
+
 /**
  * 渲染 token 流为 HTML
  */
@@ -42,7 +51,9 @@ export const renderHtml = <Scope extends string>(
     .map((rowTokens, rowIndex) => {
       const lineTokensHtml = rowTokens
         .map((token) => {
-          const style = resolveScopeStyle(token.scope, theme)
+          const styleFromToken = stringifyInlineStyle(token.style)
+          const style =
+            styleFromToken || resolveScopeStyle(token.scope, theme)
           return `<span style="${style}">${escapeHtml(token.text)}</span>`
         })
         .join('')
@@ -61,6 +72,6 @@ export const highlightJavaScript = (
   code: string,
   options?: RenderHtmlOptions
 ): string => {
-  const rows = parseJavaScript(code)
+  const rows = tokenize(code, 'javascript')
   return renderHtml(rows, options)
 }

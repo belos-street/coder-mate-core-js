@@ -1,9 +1,4 @@
-import type {
-  ParserContext,
-  Token,
-  TokenStream,
-  TokenizerSpec
-} from './types'
+import type { ParserContext, Token, TokenStream, TokenizerSpec } from './types'
 
 /**
  * 创建初始解析上下文
@@ -72,7 +67,8 @@ export const splitTokenByLineBreak = <Scope extends string>(
         text: remaining,
         scope: tokenScope,
         line: currentLine,
-        col: [currentCol, currentCol + remaining.length - 1]
+        col: [currentCol, currentCol + remaining.length - 1],
+        style: {}
       })
       break
     }
@@ -91,7 +87,8 @@ export const splitTokenByLineBreak = <Scope extends string>(
         text: beforeLineBreak,
         scope: tokenScope,
         line: currentLine,
-        col: [currentCol, currentCol + beforeLineBreak.length - 1]
+        col: [currentCol, currentCol + beforeLineBreak.length - 1],
+        style: {}
       }
       tokens.push(beforeToken)
       currentCol = beforeToken.col[1] + 1
@@ -101,7 +98,8 @@ export const splitTokenByLineBreak = <Scope extends string>(
       text: lineBreakChar,
       scope: lineBreakScope,
       line: currentLine,
-      col: [currentCol, currentCol + lineBreakChar.length - 1]
+      col: [currentCol, currentCol + lineBreakChar.length - 1],
+      style: {}
     })
 
     currentLine += 1
@@ -134,7 +132,8 @@ export const matchToken = <State extends string, Scope extends string>(
       text: matchedText,
       scope: rule.scope,
       line: context.line,
-      col: [context.col, context.col + matchedText.length - 1]
+      col: [context.col, context.col + matchedText.length - 1],
+      style: {}
     }
 
     let newContext: ParserContext<State> = { ...context }
@@ -155,7 +154,8 @@ export const matchToken = <State extends string, Scope extends string>(
       text: char,
       scope: spec.fallbackScope,
       line: context.line,
-      col: [context.col, context.col]
+      col: [context.col, context.col],
+      style: {}
     }
     return { token, newContext: { ...context, col: context.col + 1 } }
   }
@@ -185,7 +185,8 @@ export const parse = <State extends string, Scope extends string>(
         text: lineBreakText,
         scope: spec.fallbackScope,
         line: context.line,
-        col: [context.col, context.col + lineBreakText.length - 1]
+        col: [context.col, context.col + lineBreakText.length - 1],
+        style: {}
       })
 
       rows.push(currentRowTokens)

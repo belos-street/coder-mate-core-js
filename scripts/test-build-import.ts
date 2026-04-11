@@ -1,6 +1,6 @@
 import { listLanguages, tokenize } from '../dist/language.js'
 import { getTheme, listThemes } from '../dist/themes.js'
-import { codeToHtml, codeToTokens } from '../dist/index.js'
+import { createHighlighter } from '../dist/index.js'
 
 const languageIds = listLanguages().map((language) => language.id)
 if (!languageIds.includes('javascript') || !languageIds.includes('json')) {
@@ -14,14 +14,17 @@ if (jsonTokens.length === 0) {
   throw new Error('Built language bundle returned empty JSON tokens')
 }
 
-const rootTokens = codeToTokens('{"value":-1.2e+3}', { lang: 'json' }).flat()
+const highlighter = createHighlighter({ theme: 'github' })
+
+const rootTokens = (await highlighter.codeToTokens('{"value":-1.2e+3}', {
+  lang: 'json'
+})).flat()
 if (rootTokens.length === 0) {
   throw new Error('Built root bundle codeToTokens() returned empty rows')
 }
 
-const rootHtml = codeToHtml('const x = 1;', {
-  lang: 'javascript',
-  theme: 'github'
+const rootHtml = await highlighter.codeToHtml('const x = 1;', {
+  lang: 'javascript'
 })
 if (!rootHtml.includes('<pre') || !rootHtml.includes('const')) {
   throw new Error('Built root bundle codeToHtml() returned invalid html')
