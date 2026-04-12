@@ -1,8 +1,8 @@
 import { createHighlighter } from 'lib'
 import { listLanguages } from 'lib/language'
-import { escapeHtml } from '../render'
 import { LANGUAGE_LABELS, LANGUAGE_SNIPPETS } from './languages'
 import { LANGUAGE_ORDER, type DemoState, type LanguageId } from './types'
+import { escapeHtml } from './utils'
 
 const THEME_LIST = [
   { id: 'dark-plus', displayName: 'Dark+' },

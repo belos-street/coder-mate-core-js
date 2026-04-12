@@ -1,117 +1,161 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dist Import Test</title>
-    <style>
-      body {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-          "Liberation Mono", "Courier New", monospace;
-        margin: 24px;
-        line-height: 1.5;
-      }
-      .ok {
-        color: #0a7a28;
-      }
-      .fail {
-        color: #b42318;
-      }
-      pre {
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        background: #f8f8f8;
-        white-space: pre-wrap;
-      }
-      .grid {
-        display: grid;
-        gap: 16px;
-      }
-      .panel h2 {
-        margin: 0 0 8px;
-      }
-      #render-preview {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        overflow: auto;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Dist Import Smoke Test</h1>
-    <div class="grid">
-      <section class="panel">
-        <h2>1) dist/language + dist/themes</h2>
-        <p id="status">Running...</p>
-        <pre id="output"></pre>
-      </section>
 
-      <section class="panel">
-        <h2>2) dist-src/render (可视化预览)</h2>
-        <p id="render-status">Running...</p>
-        <div id="render-preview"></div>
-      </section>
-    </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dist Import Test</title>
+  <style>
+    body {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        "Liberation Mono", "Courier New", monospace;
+      margin: 24px;
+      line-height: 1.5;
+    }
 
-    <script type="module">
-      import { tokenize, listLanguages } from './dist/language.js'
-      import { getTheme, listThemes } from './dist/themes.js'
-      import { highlightJavaScript } from './dist-src/render.js'
+    .ok {
+      color: #0a7a28;
+    }
 
-      const status = document.getElementById('status')
-      const output = document.getElementById('output')
-      const renderStatus = document.getElementById('render-status')
-      const renderPreview = document.getElementById('render-preview')
+    .fail {
+      color: #b42318;
+    }
 
-      const setResult = (ok, details) => {
-        status.textContent = ok ? 'PASS' : 'FAIL'
-        status.className = ok ? 'ok' : 'fail'
-        output.textContent = JSON.stringify(details, null, 2)
-      }
+    pre {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #f8f8f8;
+      white-space: pre-wrap;
+    }
 
-      try {
-        const languageIds = listLanguages().map((lang) => lang.id)
-        const themeIds = listThemes().map((theme) => theme.id)
-        const jsonTokens = tokenize('{"a":1,"ok":true}', 'json').flat()
-        const lightTheme = getTheme('github-light')
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
 
-        const result = {
-          languageIds,
-          themeIds,
-          jsonTokenCount: jsonTokens.length,
-          hasJsonStringStyle: !!lightTheme.styles['string.quoted.double.json']
-        }
+    .panel h2 {
+      margin: 0 0 8px;
+    }
 
-        const ok =
-          languageIds.includes('javascript') &&
-          languageIds.includes('json') &&
-          themeIds.includes('dark-plus') &&
-          themeIds.includes('github-light') &&
-          result.jsonTokenCount > 0 &&
-          result.hasJsonStringStyle
+    #render-preview {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: auto;
+    }
+  </style>
+</head>
 
-        setResult(ok, result)
-      } catch (error) {
-        setResult(false, {
-          error: error instanceof Error ? error.message : String(error)
-        })
-      }
+<body>
+  <h1>Dist Import Smoke Test</h1>
+  <div class="grid">
+    <section class="panel">
+      <h2>1) dist/language + dist/themes</h2>
+      <p id="status">Running...</p>
+      <pre id="output"></pre>
+    </section>
 
-      try {
-        const sampleCode = `const user = { name: "Coder Mate", score: 98 }
-const city = user?.address?.city ?? "Unknown"
-console.log(city)`
-        const html = highlightJavaScript(sampleCode, { theme: 'github-light' })
-        renderPreview.innerHTML = html
-        renderStatus.textContent = 'PASS'
-        renderStatus.className = 'ok'
-      } catch (error) {
-        renderStatus.textContent = 'FAIL'
-        renderStatus.className = 'fail'
-        renderPreview.textContent =
-          error instanceof Error ? error.message : String(error)
-      }
-    </script>
-  </body>
+    <section class="panel">
+      <h2>2) dist-src/render (可视化预览)</h2>
+      <p id="render-status">Running...</p>
+      <div id="render-preview"></div>
+    </section>
+  </div>
+
+  <script type="module">
+    import { createHighlighter } from './dist/index.js'
+
+
+    const code = `/*
+ * ES2020 完整语法测试
+ * 演示所有核心语法特性
+ */
+
+// 1. 变量声明 + ES2020 BigInt
+const num1 = 123n; // BigInt
+const num2 = 0b1010n; // 二进制 BigInt
+let str1 = "Hello, World!";
+var x = 10;
+
+// 2. ES2020 可选链和空值合并
+const city = user?.address?.city ?? "Unknown";
+const result = obj?.method?.() ?? "default";
+
+// 3. ES2020 globalThis
+console.log(globalThis);
+
+// 4. ES2020 Promise.allSettled
+Promise.allSettled([promise1, promise2])
+  .then(results => console.log(results));
+
+// 5. ES2020 动态导入
+import("./module.js")
+  .then(module => {
+    module.hello();
+  })
+  .catch(err => {
+    console.error(err);
+  });
+
+// 6. 类定义
+class Person extends Object {
+  constructor(name, age) {
+    super();
+    this.name = name;
+    this.age = age;
+  }
+
+  static create(name, age) {
+    return new Person(name, age);
+  }
+
+  get info() {
+    return \`\${this.name} is \${this.age} years old\`;
+  }
+
+  async greet() {
+    await fetch('/api');
+    return 'Hello';
+  }
+}
+
+// 7. 箭头函数
+const add = (a, b) => a + b;
+const multiply = (x) => x * 2;
+
+// 8. 模板字符串
+const template = \`Hello, \${name}!
+Welcome to ES2020.\`;
+
+// 9. 多行注释
+/*
+ * 这是一个多行注释
+ * 可以跨越多行
+ */
+
+// 10. 对象字面量
+const obj = {
+  key: "value",
+  method() {
+    return "hello";
+  }
+};
+
+// 11. 运算符
+const a = 10, b = 20;
+const result2 = (a + b) * (a - b) === 0 && a || b;`
+    const highlighter = createHighlighter({
+      theme: 'github-light'
+    })
+
+    const html = await highlighter.codeToHtml(code, {
+      lang: 'typescript'
+    })
+
+
+    document.getElementById('output').innerHTML = html
+
+  </script>
+</body>
+
 </html>
