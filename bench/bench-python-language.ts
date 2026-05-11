@@ -1,14 +1,4 @@
-import { parse } from '../lib/language/python'
-import { renderHtml } from '../src/render'
 import { runLanguageBenchmark } from './common'
-
-const highlightPython = (code: string): string => {
-  const rows = parse(code)
-  return renderHtml(rows, {
-    theme: 'dark-plus',
-    lineClassPrefix: 'python-line-'
-  })
-}
 
 const generateTestCode = (lines: number): string => {
   const codeLines: string[] = []
@@ -55,7 +45,6 @@ const generateTestCode = (lines: number): string => {
 
 runLanguageBenchmark({
   languageName: 'Python',
-  parse,
-  highlight: highlightPython,
+  lang: 'python',
   generateTestCode
 })

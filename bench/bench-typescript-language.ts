@@ -1,14 +1,4 @@
-import { parse } from '../lib/language/typescript'
-import { renderHtml } from '../src/render'
 import { runLanguageBenchmark } from './common'
-
-const highlightTypeScript = (code: string): string => {
-  const rows = parse(code)
-  return renderHtml(rows, {
-    theme: 'dark-plus',
-    lineClassPrefix: 'typescript-line-'
-  })
-}
 
 const generateTestCode = (lines: number): string => {
   const codeLines: string[] = []
@@ -73,7 +63,6 @@ const generateTestCode = (lines: number): string => {
 
 runLanguageBenchmark({
   languageName: 'TypeScript',
-  parse,
-  highlight: highlightTypeScript,
+  lang: 'typescript',
   generateTestCode
 })

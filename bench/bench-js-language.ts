@@ -1,5 +1,3 @@
-import { parse } from '../lib/language/javascript'
-import { highlightJavaScript as highlight } from '../src/render'
 import { runLanguageBenchmark } from './common'
 
 const generateTestCode = (lines: number): string => {
@@ -47,7 +45,6 @@ const generateTestCode = (lines: number): string => {
 
 runLanguageBenchmark({
   languageName: 'JavaScript',
-  parse,
-  highlight,
+  lang: 'javascript',
   generateTestCode
 })

@@ -16,8 +16,7 @@ export interface TestCase {
 
 export interface BenchmarkOptions {
   languageName: string
-  parse: (code: string) => unknown
-  highlight: (code: string) => string
+  lang: string
   generateTestCode: (lines: number) => string
   testCases?: TestCase[]
 }
@@ -28,40 +27,6 @@ const DEFAULT_TEST_CASES: TestCase[] = [
   { name: '大文件 (10,000 行)', lines: 10000 },
   { name: '超大文件 (50,000 行)', lines: 50000 }
 ]
-
-const measurePerformance = (
-  name: string,
-  code: string,
-  parseFn: (code: string) => unknown,
-  highlightFn: (code: string) => string
-): PerformanceResult => {
-  const lines = code.split('\n').length
-
-  const parseStart = performance.now()
-  const parsed = parseFn(code)
-  const parseEnd = performance.now()
-  const parseTime = parseEnd - parseStart
-
-  const highlightStart = performance.now()
-  const html = highlightFn(code)
-  const highlightEnd = performance.now()
-  const highlightTime = highlightEnd - highlightStart
-
-  void parsed
-  void html
-
-  const totalTime = parseTime + highlightTime
-  const throughput = lines / (totalTime / 1000)
-
-  return {
-    name,
-    lines,
-    parseTime,
-    highlightTime,
-    totalTime,
-    throughput
-  }
-}
 
 const formatResult = (result: PerformanceResult): string => {
   return `
@@ -74,13 +39,15 @@ ${result.name}:
 `
 }
 
-export const runLanguageBenchmark = ({
+export const runLanguageBenchmark = async ({
   languageName,
-  parse,
-  highlight,
+  lang,
   generateTestCode,
   testCases = DEFAULT_TEST_CASES
-}: BenchmarkOptions): void => {
+}: BenchmarkOptions): Promise<void> => {
+  const { createHighlighter } = await import('../lib/index')
+  const highlighter = createHighlighter({ theme: 'dark-plus' })
+
   console.log(`🚀 开始 ${languageName} 性能测试...\n`)
 
   const results: PerformanceResult[] = []
@@ -88,9 +55,34 @@ export const runLanguageBenchmark = ({
   for (const testCase of testCases) {
     console.log(`生成测试代码: ${testCase.name}...`)
     const code = generateTestCode(testCase.lines)
+    const lines = code.split('\n').length
 
     console.log(`测试: ${testCase.name}`)
-    const result = measurePerformance(testCase.name, code, parse, highlight)
+
+    const parseStart = performance.now()
+    const tokens = await highlighter.codeToTokens(code, { lang })
+    const parseEnd = performance.now()
+    const parseTime = parseEnd - parseStart
+
+    const highlightStart = performance.now()
+    const html = await highlighter.codeToHtml(code, { lang })
+    const highlightEnd = performance.now()
+    const highlightTime = highlightEnd - highlightStart
+
+    void tokens
+    void html
+
+    const totalTime = parseTime + highlightTime
+    const throughput = lines / (totalTime / 1000)
+
+    const result: PerformanceResult = {
+      name: testCase.name,
+      lines,
+      parseTime,
+      highlightTime,
+      totalTime,
+      throughput
+    }
     results.push(result)
     console.log(formatResult(result))
   }
@@ -130,12 +122,12 @@ export const runLanguageBenchmark = ({
   console.log('\n💾 内存测试...\n')
   const memoryBefore = heapStats()
   const memoryCode = generateTestCode(10000)
-  const parsed = parse(memoryCode)
-  const html = highlight(memoryCode)
+  const memoryTokens = await highlighter.codeToTokens(memoryCode, { lang })
+  const memoryHtml = await highlighter.codeToHtml(memoryCode, { lang })
   const memoryAfter = heapStats()
 
-  void parsed
-  void html
+  void memoryTokens
+  void memoryHtml
 
   console.log('内存使用情况:')
   console.log(
@@ -147,7 +139,9 @@ export const runLanguageBenchmark = ({
   console.log(
     `- 额外内存: ${((memoryAfter.extraMemorySize - memoryBefore.extraMemorySize) / 1024 / 1024).toFixed(2)} MB`
   )
-  console.log(`- 对象数量: ${memoryAfter.objectCount - memoryBefore.objectCount}`)
+  console.log(
+    `- 对象数量: ${memoryAfter.objectCount - memoryBefore.objectCount}`
+  )
 
   const heapIncrease =
     (memoryAfter.heapSize - memoryBefore.heapSize) / 1024 / 1024
