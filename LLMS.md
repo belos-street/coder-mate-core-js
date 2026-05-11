@@ -209,11 +209,11 @@ bun run verify:build
 4. 做任何改动后优先跑 `bun test` 与 `bunx tsc --noEmit -p tsconfig.build.json`。
 5. 不要把语言特定逻辑写进 `lib/core/*`。
 
-## 13. 项目内 Skill（.agent）
+## 13. 项目内 Skill（.agents）
 
-仓库包含本地技能系统（`.agent/skills`）。接手任务时可优先参考：
+仓库包含本地技能系统（`.agents/skills`）。接手任务时可优先参考：
 
-- `.agent/skills/agent.md`
+- `.agents/skills/agent.md`
 - `brainstorming`
 - `writing-plans`
 - `belos-street`

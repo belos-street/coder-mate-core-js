@@ -1,4 +1,4 @@
-﻿/**
+﻿﻿/**
  * JavaScript (ES2020) grammar type definitions
  */
 
